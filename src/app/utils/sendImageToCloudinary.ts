@@ -12,7 +12,7 @@ cloudinary.config({
 export const sendImageToCloudinary = (
   imageName: string,
   path: string,
-): Promise<Record<string, unknown>> => {
+): Promise<UploadApiResponse> => {
   return new Promise((resolve, reject) => {
     cloudinary.uploader.upload(
       path,
@@ -20,16 +20,17 @@ export const sendImageToCloudinary = (
       function (error, result) {
         if (error) {
           reject(error);
+        } else {
+          resolve(result as UploadApiResponse);
+          // Now, delete the file asynchronously after successful upload
+          fs.unlink(path, (err) => {
+            if (err) {
+              console.error('Failed to delete file:', err);
+            } else {
+              console.log('File deleted successfully.');
+            }
+          });
         }
-        resolve(result as UploadApiResponse);
-        // delete a file asynchronously
-        fs.unlink(path, (err) => {
-          if (err) {
-            console.log(err);
-          } else {
-            console.log('File is deleted.');
-          }
-        });
       },
     );
   });

@@ -202,7 +202,7 @@ const createAdminIntoDB = async (
       const { secure_url } = await sendImageToCloudinary(imageName, path);
       payload.profileImg = secure_url as string;
     }
-
+    console.log(userData);
     // create a user (transaction-1)
     const newUser = await User.create([userData], { session });
 
